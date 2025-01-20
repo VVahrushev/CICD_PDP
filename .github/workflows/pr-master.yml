@@ -14,7 +14,9 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set up SFDX CLI
-      uses: forcedotcom/cli-sfdx-ci-gha@v1
+      run: |
+        npm install sfdx-cli --global
+        sfdx --version
 
     - name: Authenticate to Salesforce
       env:
