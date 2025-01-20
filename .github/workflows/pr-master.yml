@@ -23,7 +23,7 @@ jobs:
         SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
       run: |
         echo $SFDX_AUTH_URL > sfdx_auth_url.txt
-        sfdx auth:sfdxurl:store -f sfdx_auth_url.txt -a ValidationOrg
+        sfdx force:auth:sfdxurl:store -f sfdx_auth_url.txt -a ValidationOrg
 
     - name: Validate deployment
       run: sfdx force:source:deploy --checkonly -u ValidationOrg --sourcepath force-app
