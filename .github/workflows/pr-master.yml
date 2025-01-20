@@ -25,5 +25,11 @@ jobs:
         echo $SFDX_AUTH_URL > sfdx_auth_url.txt
         sfdx force:auth:sfdxurl:store -f sfdx_auth_url.txt -a ValidationOrg
 
+    - name: List Apex test classes
+      run: |
+        TEST_CLASSES=$(find force-app/main/default/classes/tests -name "*.cls" -exec basename {} .cls \| grep -v "Test" \;)
+        echo "Found test classes: $TEST_CLASSES"
+        echo "TEST_CLASSES=$TEST_CLASSES" >> $GITHUB_ENV
+
     - name: Validate deployment
-      run: sfdx force:source:deploy --checkonly -u ValidationOrg --sourcepath force-app
+      run: sfdx force:source:deploy --checkonly -u ValidationOrg --sourcepath force-app --testlevel RunSpecifiedTests --runtests $TEST_CLASSES
