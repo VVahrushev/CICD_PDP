@@ -27,9 +27,14 @@ jobs:
 
     - name: List Apex test classes
       run: |
-        TEST_CLASSES=$(find force-app/main/default/classes/tests -name "*.cls" -exec basename {} .cls \| grep -v "Test" \;)
+        TEST_CLASSES=$(find force-app/main/default/classes/tests -name "*Test.cls" -exec basename {} .cls \;)
         echo "Found test classes: $TEST_CLASSES"
         echo "TEST_CLASSES=$TEST_CLASSES" >> $GITHUB_ENV
 
     - name: Validate deployment
-      run: sfdx force:source:deploy --checkonly -u ValidationOrg --sourcepath force-app --testlevel RunSpecifiedTests --runtests $TEST_CLASSES
+      run: |
+        if [ -z "$TEST_CLASSES" ]; then
+          sfdx force:source:deploy --checkonly -u ValidationOrg --sourcepath force-app
+        else
+          sfdx force:source:deploy --checkonly -u ValidationOrg --sourcepath force-app --testlevel RunSpecifiedTests --runtests $TEST_CLASSES
+        fi
