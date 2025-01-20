@@ -27,7 +27,7 @@ jobs:
 
     - name: List Apex test classes
       run: |
-        TEST_CLASSES=$(find force-app/main/default/classes/tests -name "*Test.cls" -exec basename {} .cls \;)
+        TEST_CLASSES=$(find force-app/main/default/classes/tests -name "*Test.cls" -exec basename {} .cls \; | tr '\n' ',' | sed 's/,$//')
         echo "Found test classes: $TEST_CLASSES"
         echo "TEST_CLASSES=$TEST_CLASSES" >> $GITHUB_ENV
 
