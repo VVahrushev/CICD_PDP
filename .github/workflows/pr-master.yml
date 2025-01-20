@@ -1,0 +1,27 @@
+name: Validate Deployment to Prod
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SFDX CLI
+      uses: forcedotcom/cli-sfdx-ci-gha@v1
+
+    - name: Authenticate to Salesforce
+      env:
+        SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+      run: |
+        echo $SFDX_AUTH_URL > sfdx_auth_url.txt
+        sfdx auth:sfdxurl:store -f sfdx_auth_url.txt -a ValidationOrg
+
+    - name: Validate deployment
+      run: sfdx force:source:deploy --checkonly -u ValidationOrg --sourcepath force-app
