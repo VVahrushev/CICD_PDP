@@ -38,3 +38,11 @@ jobs:
         else
           sfdx force:source:deploy --checkonly -u ValidationOrg --sourcepath force-app --testlevel RunSpecifiedTests --runtests $TEST_CLASSES
         fi
+
+        DEPLOY_EXIT_CODE=${PIPESTATUS[0]}
+
+        if [ $DEPLOY_EXIT_CODE -ne 0 ]; then
+          echo "Deployment validation failed. Extracting error messages..."
+          cat deploy_output.log | grep -E "(ERROR|FAILED)" || echo "No specific error message found."
+          exit $DEPLOY_EXIT_CODE
+        fi
